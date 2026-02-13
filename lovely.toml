@@ -535,14 +535,6 @@ match_indent = true
 
 [[patches]]
 [patches.pattern]
-target = 'cardarea.lua'
-pattern = '''local card_count = self ~= G.shop_vouchers and {n=G.UIT.R, config={align = self == G.jokers and 'cl' or self == G.hand and 'cm' or 'cr', padding = 0.03, no_fill = true}, nodes={'''
-position = 'at'
-payload = '''local card_count = ((self ~= G.shop_vouchers) and not (self.config.skill_table)) and {n=G.UIT.R, config={align = self == G.jokers and 'cl' or self == G.hand and 'cm' or 'cr', padding = 0.03, no_fill = true}, nodes={'''
-match_indent = true
-
-[[patches]]
-[patches.pattern]
 target = 'card.lua'
 pattern = '''self.highlighted = is_higlighted'''
 position = 'after'
@@ -1010,7 +1002,7 @@ if pointer_index and (pointer_index == i) and not pointer_found then
 end
 if self.ability.name:find('Arcana') and skill_active("sk_ortalab_magica_1") then
     if pseudorandom('magica') < 0.4 then
-        card = create_card("ortalab_loteria", G.pack_cards, nil, nil, true, true, nil, nil)
+        card = create_card("ortalab_loteria", G.pack_cards, nil, nil, true, true, nil, 'pl1')
         card:start_materialize({G.C.WHITE, G.C.WHITE}, nil, 1.5*G.SETTINGS.GAMESPEED)
         card.T.x = self.T.x + 0
         card.T.y = self.T.y
@@ -1020,7 +1012,7 @@ if self.ability.name:find('Arcana') and skill_active("sk_ortalab_magica_1") then
 end
 if self.ability.name:find('Celestial') and skill_active("sk_ortalab_starry_2") then
     if pseudorandom('magica') < 0.4 then
-        card = create_card("ortalab_zodiac", G.pack_cards, nil, nil, true, true, nil, nil)
+        card = create_card("ortalab_zodiac", G.pack_cards, nil, nil, true, true, nil, 'pl1')
         card:start_materialize({G.C.WHITE, G.C.WHITE}, nil, 1.5*G.SETTINGS.GAMESPEED)
         card.T.x = self.T.x + 0
         card.T.y = self.T.y
