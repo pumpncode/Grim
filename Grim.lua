@@ -4,7 +4,7 @@
 --- PREFIX: grm
 --- MOD_AUTHOR: [mathguy]
 --- MOD_DESCRIPTION: Skill trees in Balatro! Thank you to Mr.Clover for Taiwanese Mandarin translation
---- VERSION: 1.2.7b
+--- VERSION: 1.3
 ----------------------------------------------
 ------------MOD CODE -------------------------
 
@@ -1236,7 +1236,7 @@ function skill_tree_row_UI(tier)
         G.ROOM.T.x + 0.2*G.ROOM.T.w/2,G.ROOM.T.h,
         (5.25)*G.CARD_W,
         1*G.CARD_W, 
-    {card_limit = 5, type = 'joker', highlight_limit = 1, skill_table = true})
+    {card_limit = 5, type = 'joker', highlight_limit = 1, skill_table = true, no_card_count = true})
     local t = {n=G.UIT.R, config={align = "cm", padding = 0, no_fill = true, id = 'skill_tree_tier_' .. tostring(tier)}, nodes={
         UIBox_button{col = true, label = {"<"}, button = "grm_skill_tree_l", func = 'grm_can_skill_tree_l', minw = 0.5, minh = 1*G.CARD_W, ref_table = skills},
         {n=G.UIT.C, config={align = "cm", padding = 0, minh = 0.8, minw = 0.4 + (5.25)*G.CARD_W}, nodes = {{n=G.UIT.O, config={object = G.areas[tier]}}}},
@@ -2663,62 +2663,6 @@ SMODS.Sticker {
         return {vars = {}}
     end,
 }
-
--- SMODS.Sticker {
---     key = 'accomplishment',
---     rate = 0,
---     pos = { x = 1, y = 0 },
---     colour = HEX '8a71e1',
---     badge_colour = HEX '8a71e1',
---     atlas = 'stickers2',
---     should_apply = function(self, card, center, area)
---         return false
---     end,
---     loc_txt = {
---         name = "Accomplishment Badge",
---         text = {
---             "{C:purple}+75{} XP at end",
---             "of {C:attention}ante{}",
---         },
---         label = "Accomplishment"
---     },
---     loc_vars = function(self, info_queue, card)
---         return {vars = {}}
---     end,
---     calculate = function(self, card, context)
---         if context.end_of_round and not context.individual and not context.repetition and not context.blueprint and G.GAME.blind.boss and not (G.GAME.blind.config and  G.GAME.blind.config.bonus) then
---             add_skill_xp(75, card)
---         end
---     end
--- }
-
--- SMODS.Sticker {
---     key = 'accomplishment_playing_card',
---     rate = 0,
---     pos = { x = 1, y = 0 },
---     colour = HEX '8a71e1',
---     badge_colour = HEX '8a71e1',
---     atlas = 'stickers2',
---     should_apply = function(self, card, center, area)
---         return false
---     end,
---     loc_txt = {
---         name = "Accomplishment Badge",
---         text = {
---             "+{C:purple}30{} XP if held in",
---             "hand at end of {C:attention}ante{}"
---         },
---         label = "Accomplishment"
---     },
---     loc_vars = function(self, info_queue, card)
---         return {vars = {}}
---     end,
---     calculate = function(self, card, context)
---         if context.playing_card_end_of_round and (context.cardarea == G.hand) and not context.individual and not context.repetition and G.GAME.blind.boss and not (G.GAME.blind.config and G.GAME.blind.config.bonus) then
---             add_skill_xp(30, card)
---         end
---     end
--- }
 
 SMODS.Sticker {
     key = 'window_shopper',
@@ -4478,6 +4422,14 @@ function Game:update(dt)
     end
 end
 
+local old_create_UIBox_notify_alert = create_UIBox_notify_alert
+function create_UIBox_notify_alert(_achievement, _type)
+    if _type == 'Skill' then
+        return create_UIBox_notify_alert_skill(_achievement, _type)
+    end
+    return old_create_UIBox_notify_alert(_achievement, _type)
+end
+
 function set_skill_win()
     if not G.PROFILES[G.SETTINGS.profile].skill_banners then
         G.PROFILES[G.SETTINGS.profile].skill_banners = {}
@@ -4895,6 +4847,47 @@ end
 function Card:get_chip_h_chips()
     if self.debuff then return 0 end
     return self.ability.h_chips or 0
+end
+
+function create_UIBox_notify_alert_skill(_achievement, _type)
+  local _c, _atlas = G.P_SKILLS[_achievement], G.ASSET_ATLAS[G.P_SKILLS[_achievement].atlas]
+
+  local t_s = Sprite(0,0,1.5*(_atlas.px/_atlas.py),1.5,_atlas, _c and _c.pos or {x=3, y=0})
+  t_s.states.drag.can = false
+  t_s.states.hover.can = false
+  t_s.states.collide.can = false
+ 
+  local subtext = localize('k_skill')
+
+    local t = {n=G.UIT.ROOT, config = {align = 'cl', r = 0.1, padding = 0.06, colour = G.C.UI.TRANSPARENT_DARK}, nodes={
+    {n=G.UIT.R, config={align = "cl", padding = 0.2, minw = 20, r = 0.1, colour = G.C.BLACK, outline = 1.5, outline_colour = G.C.GREY}, nodes={
+      {n=G.UIT.R, config={align = "cm", r = 0.1}, nodes={
+        {n=G.UIT.R, config={align = "cm", r = 0.1}, nodes={
+          {n=G.UIT.O, config={object = t_s}},
+        }},
+        _type ~= 'achievement' and {n=G.UIT.R, config={align = "cm", padding = 0.04}, nodes={
+          {n=G.UIT.R, config={align = "cm", maxw = 3.4}, nodes={
+            {n=G.UIT.T, config={text = subtext, scale = 0.5, colour = G.C.FILTER, shadow = true}},
+          }},
+          {n=G.UIT.R, config={align = "cm", maxw = 3.4}, nodes={
+            {n=G.UIT.T, config={text = localize('k_unlocked_ex'), scale = 0.35, colour = G.C.FILTER, shadow = true}},
+          }}
+        }}
+        or {n=G.UIT.R, config={align = "cm", padding = 0.04}, nodes={
+          {n=G.UIT.R, config={align = "cm", maxw = 3.4, padding = 0.1}, nodes={
+            {n=G.UIT.T, config={text = name, scale = 0.4, colour = G.C.UI.TEXT_LIGHT, shadow = true}},
+          }},
+          {n=G.UIT.R, config={align = "cm", maxw = 3.4}, nodes={
+            {n=G.UIT.T, config={text = subtext, scale = 0.3, colour = G.C.FILTER, shadow = true}},
+          }},
+          {n=G.UIT.R, config={align = "cm", maxw = 3.4}, nodes={
+            {n=G.UIT.T, config={text = localize('k_unlocked_ex'), scale = 0.35, colour = G.C.FILTER, shadow = true}},
+          }}
+        }}
+      }}
+    }}
+  }}
+  return t
 end
 
 G.FUNCS.your_lunar_stats = function(e)
