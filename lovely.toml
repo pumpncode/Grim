@@ -1010,7 +1010,7 @@ if pointer_index and (pointer_index == i) and not pointer_found then
 end
 if self.ability.name:find('Arcana') and skill_active("sk_ortalab_magica_1") then
     if pseudorandom('magica') < 0.4 then
-        card = create_card("Loteria", G.pack_cards, nil, nil, true, true, nil, 'pl1')
+        card = create_card("ortalab_loteria", G.pack_cards, nil, nil, true, true, nil, nil)
         card:start_materialize({G.C.WHITE, G.C.WHITE}, nil, 1.5*G.SETTINGS.GAMESPEED)
         card.T.x = self.T.x + 0
         card.T.y = self.T.y
@@ -1020,7 +1020,7 @@ if self.ability.name:find('Arcana') and skill_active("sk_ortalab_magica_1") then
 end
 if self.ability.name:find('Celestial') and skill_active("sk_ortalab_starry_2") then
     if pseudorandom('magica') < 0.4 then
-        card = create_card("Zodiac", G.pack_cards, nil, nil, true, true, nil, 'pl1')
+        card = create_card("ortalab_zodiac", G.pack_cards, nil, nil, true, true, nil, nil)
         card:start_materialize({G.C.WHITE, G.C.WHITE}, nil, 1.5*G.SETTINGS.GAMESPEED)
         card.T.x = self.T.x + 0
         card.T.y = self.T.y
