@@ -622,7 +622,7 @@ if (G.GAME.blind_on_deck == "Boss") and G.GAME.special_levels and (G.GAME.specia
         add_tag(Tag("tag_negative"))
     end
 end
-if (G.GAME.special_levels) and (G.GAME.special_levels["boss"] > 0) and (G.GAME.blind_on_deck == "Boss") and G.GAME.blind and G.GAME.blind.config.blind.boss.showdown then
+if (G.GAME.special_levels) and (G.GAME.special_levels["boss"] > 0) and (G.GAME.blind_on_deck == "Boss") and G.GAME.blind and G.GAME.blind.config.blind.boss and G.GAME.blind.config.blind.boss.showdown then
     local glass = {}
     local pool = {}
     for i = 1, #G.playing_cards do
@@ -1126,7 +1126,7 @@ if (G.GAME.blind_on_deck == "Boss") then
     if G.GAME.modifiers and G.GAME.modifiers.force_stake_xp then
         plus_xp = G.GAME.modifiers.force_stake_xp
     end
-    if G.GAME.blind and G.GAME.blind.config.blind.boss.showdown then
+    if G.GAME.blind and G.GAME.blind.config.blind.boss and G.GAME.blind.config.blind.boss.showdown then
         plus_xp = math.floor(plus_xp * 2)
         name = localize('showdown_blind')
     end
